@@ -1,0 +1,26 @@
+version: "2"
+services:
+ db:
+  image: microsoft/mssql-server-linux
+  container_name: mssql
+  restart: always
+  environment:
+   - ACCEPT_EULA=Y
+   - SA_PASSWORD=12345678?a
+  networks:
+   - back-tier
+ app:
+  build: .
+  image: chuongdang/netaspcore-sample
+  container_name: app
+  environment:
+   - ASPNETCORE_ENVIRONMENT=Development
+  command: dotnet ef database update
+  ports:
+   - "80:80"
+  networks:
+   - back-tier
+
+networks:
+  back-tier:
+
