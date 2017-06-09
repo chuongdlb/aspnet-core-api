@@ -17,6 +17,7 @@ namespace NetcoreMvc.AppService
         {
             _cityRepository =  cityRepository;
         }
+        
         public void AddNewCity(CityDto cityDto)
         {
             var newCity = new City()
@@ -58,6 +59,12 @@ namespace NetcoreMvc.AppService
         {
             var returnCity = _cityRepository.GetAll().Include(city => city.PointsOfInterest)
                 .FirstOrDefault(city => city.Id == cityId);
+            return Mapper.Map<CityDto>(returnCity);
+        }
+
+        public CityDto FindCityByName(string cityName)
+        {
+            var returnCity = _cityRepository.GetCityByName(cityName);
             return Mapper.Map<CityDto>(returnCity);
         }
     }

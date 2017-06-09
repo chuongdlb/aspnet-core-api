@@ -36,6 +36,16 @@ namespace NetcoreMvc.Controllers
             return Ok(retCityDto);
         }
     
+        [HttpGet("name/{cityName}")]
+        public IActionResult GetCity(string cityName)
+        {
+            CityDto retCityDto = _cityInfoService.FindCityByName(cityName);
+            if (retCityDto == null)
+            {
+                return NotFound();
+            }
+            return Ok(retCityDto);
+        }
         
         // POST api/cities
         [HttpPost]

@@ -7,6 +7,8 @@ services:
   environment:
    - ACCEPT_EULA=Y
    - SA_PASSWORD=12345678?a
+  ports:
+   - "1433:1433"
   networks:
    - back-tier
  app:

@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Localization;
@@ -29,8 +31,9 @@ namespace NetcoreMvc
                 .AddEnvironmentVariables();
             Configuration = builder.Build();
         }
+        public IContainer ApplicationContainer { get; private set; }
 
-        public IConfigurationRoot Configuration { get; }
+        public IConfigurationRoot Configuration { get; private set; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -40,12 +43,11 @@ namespace NetcoreMvc
             // Add framework services.
             services.AddLocalization(opts => { opts.ResourcesPath = "Resources"; });
             services.AddMvc().AddDataAnnotationsLocalization();
-            
-            // DI GenericRepository, IGenericRepository
-            
+
+
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-            // DI ICityInfoService
             services.AddTransient<ICityInfoService, CityInfoService>();
+            services.AddTransient<IPointOfInterestService, PointOfInterestService>();
             
             // Configure localization
             services.Configure<RequestLocalizationOptions>(
@@ -66,7 +68,7 @@ namespace NetcoreMvc
                     // UI strings that we have localized.
                     opts.SupportedUICultures = supportedCultures;
                 });
-            
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

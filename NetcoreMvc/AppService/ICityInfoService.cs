@@ -13,5 +13,6 @@ namespace NetcoreMvc.AppService
         IEnumerable<CityWithoutPointsOfInterestDto> GetAllCities();
         
         CityDto GetCityById(int cityId);
+        CityDto FindCityByName(string cityName);
     }
 }
