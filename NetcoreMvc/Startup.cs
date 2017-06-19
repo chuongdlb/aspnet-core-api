@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -34,12 +35,16 @@ namespace NetcoreMvc
         public IContainer ApplicationContainer { get; private set; }
 
         public IConfigurationRoot Configuration { get; private set; }
-
+        
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ApplicationContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            //services.AddDbContext<ApplicationContext>(options => options.UseInMemoryDatabase());
+
+            services.AddEntityFramework().AddEntityFrameworkSqlite().AddDbContext<ApplicationContext>();
+            // services.AddDbContext<ApplicationContext>(options =>
+            //   options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            
             // Add framework services.
             services.AddLocalization(opts => { opts.ResourcesPath = "Resources"; });
             services.AddMvc().AddDataAnnotationsLocalization();
@@ -73,7 +78,7 @@ namespace NetcoreMvc
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory,
-            ApplicationContext cityInfoContext)
+           ApplicationContext dbContext)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
@@ -86,8 +91,8 @@ namespace NetcoreMvc
             {
                 app.UseExceptionHandler();
             }
-            
-            cityInfoContext.EnsureSeedDataForContext();
+
+            dbContext.EnsureSeedDataForContext();
             
             AutoMapper.Mapper.Initialize(cfg =>
             {

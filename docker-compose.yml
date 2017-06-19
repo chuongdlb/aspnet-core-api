@@ -1,16 +1,5 @@
 version: "2"
 services:
- db:
-  image: microsoft/mssql-server-linux
-  container_name: mssql
-  restart: always
-  environment:
-   - ACCEPT_EULA=Y
-   - SA_PASSWORD=12345678?a
-  ports:
-   - "1433:1433"
-  networks:
-   - back-tier
  app:
   build: .
   image: chuongdang/netaspcore-sample
